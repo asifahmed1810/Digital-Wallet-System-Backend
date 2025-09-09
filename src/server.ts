@@ -1,8 +1,9 @@
+/* eslint-disable no-console */
 // uqNfrOGhtzuFJ4Fl
 // digital_wallet
 
 import {Server} from "http"
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import app from "./app";
 
 let server:Server;
