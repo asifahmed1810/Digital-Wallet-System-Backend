@@ -19,6 +19,8 @@ export const checkAuth=(...authRoles:string[])=>async(req:Request , res:Response
             throw new AppError(httpStatus.BAD_REQUEST , "You are not permitted to view this route")
         }
 
+        req.user=verifiedToken;
+
         next()
 
     } catch (error) {
