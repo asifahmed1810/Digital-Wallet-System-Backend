@@ -5,26 +5,37 @@ import httpStatus from "http-status-codes";
 import { envVars } from "../config/env";
 import { JwtPayload } from "jsonwebtoken";
 
-export const checkAuth=(...authRoles:string[])=>async(req:Request , res:Response,next:NextFunction)=>{
+export const checkAuth =
+  (...authRoles: string[]) =>
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const accessToken=req.headers.authorization;
+      const accessToken = req.headers.authorization;
 
-        if(!accessToken){
-            throw new AppError(httpStatus.BAD_REQUEST , "No token received")
-        }
+      if (!accessToken) {
+        throw new AppError(httpStatus.BAD_REQUEST, "No token received");
+      }
 
-        const verifiedToken= verifyToken(accessToken ,envVars.JWT_ACCESS_SECRET) as JwtPayload;
+      const verifiedToken = verifyToken(
+        accessToken,
+        envVars.JWT_ACCESS_SECRET
+      ) as JwtPayload;
 
-        if(!authRoles.includes(verifiedToken.role)){
-            throw new AppError(httpStatus.BAD_REQUEST , "You are not permitted to view this route")
-        }
+      if (!authRoles.includes(verifiedToken.role)) {
+        throw new AppError(
+          httpStatus.BAD_REQUEST,
+          "You are not permitted to view this route"
+        );
+      }
 
-        req.user=verifiedToken;
+      req.user = {
+        id: verifiedToken.userId,
+        email: verifiedToken.email,
+        role: verifiedToken.role,
+      };
 
-        next()
-
+      next();
     } catch (error) {
-        console.log("JWT error", error);
-        next(error)
+      console.log("JWT error", error);
+      next(error);
     }
-}
+  };

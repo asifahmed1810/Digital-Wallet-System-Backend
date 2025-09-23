@@ -21,7 +21,7 @@ const credentialsLogin=async(payload:Partial<IUser>)=>{
     }
 
     const jwtPayload={
-        userId:isUserExist._id,
+        userId:isUserExist._id.toString(),
         email:isUserExist.email,
         role:isUserExist.role,
     }

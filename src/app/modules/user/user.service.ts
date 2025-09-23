@@ -1,90 +1,93 @@
 import AppError from "../../errorHelpers/AppError";
 import { IAuthProvider, IUser, Role } from "./user.interface";
 import { User } from "./user.model";
-import httpStatus from "http-status-codes"
+import httpStatus from "http-status-codes";
 import bcryptjs from "bcryptjs";
 import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
 import { Wallet } from "../wallet/wallet.model";
 
+const createUser = async (payload: Partial<IUser>) => {
+  const { email, password, ...rest } = payload;
+  
 
+  const isUserExist = await User.findOne({ email });
 
-const createUser=async(payload:Partial<IUser>)=>{
-    const {email,password, ...rest}=payload;
+  if (isUserExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User already exist");
+  }
 
-    const isUserExist= await User.findOne({email});
+  const authProvider: IAuthProvider = {
+    provider: "credentials",
+    providerId: email as string,
+  };
 
-    if(isUserExist){
-        throw new AppError(httpStatus.BAD_REQUEST ,"User already exist")
+  const hashPassword = await bcryptjs.hash(password as string, 10);
+
+  const user = await User.create({
+    email,
+    password: hashPassword,
+    auths: [authProvider],
+    ...rest,
+  });
+
+  await Wallet.create({ user: user._id });
+
+  return user;
+};
+
+const getAllUsers = async () => {
+  const users = await User.find({});
+
+  const totalUser = await User.countDocuments();
+
+  return {
+    data: users,
+    meta: {
+      total: totalUser,
+    },
+  };
+};
+
+const updateUser = async (
+  userId: string,
+  payload: Partial<IUser>,
+  decodedToken: JwtPayload
+) => {
+  const ifUserExist = await User.findById(userId);
+
+  if (!ifUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  if (payload.role) {
+    if (decodedToken.role === Role.USER || decodedToken.role === Role.AGENT) {
+      throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
     }
+  }
 
-    const authProvider:IAuthProvider={provider:"credentials", providerId:email as string}
-
-    const hashPassword=await bcryptjs.hash(password as string,10 )
-
-    const user=await User.create({
-        
-        email,
-        password:hashPassword,
-        auths:[authProvider],
-        ...rest
-    })
-
-    await Wallet.create({user:user._id})
-   
-
-    return user;
-}
-
-const getAllUsers=async()=>{
-    const users=await User.find({})
-
-    const totalUser= await User.countDocuments();
-
-
-
-    return {
-        data:users,
-        meta:{
-            total:totalUser
-        }
+  if (payload.isActive) {
+    if (decodedToken.role === Role.USER || decodedToken.role === Role.AGENT) {
+      throw new AppError(httpStatus.FORBIDDEN, "You are not Authorized");
     }
-}
+  }
 
-const updateUser=async(userId:string , payload:Partial<IUser> , decodedToken:JwtPayload)=>{
-    const ifUserExist=await User.findById(userId);
+  if (payload.password) {
+    payload.password = await bcryptjs.hash(
+      payload.password,
+      envVars.BCRYPT_SALT_ROUND
+    );
+  }
 
-    if(!ifUserExist){
-        throw new AppError(httpStatus.NOT_FOUND,"User not found")
-    }
+  const newUpdateUser = await User.findByIdAndUpdate(userId, payload, {
+    new: true,
+  });
 
-    if(payload.role){
-        if(decodedToken.role ===Role.USER || decodedToken.role === Role.AGENT){
-            throw new AppError(httpStatus.FORBIDDEN ,"You are not authorized");
-        }
-        
-    }
+  return newUpdateUser;
+};
 
-    if(payload.isActive ){
-        if(decodedToken.role ===Role.USER || decodedToken.role ===Role.AGENT){
-            throw new AppError(httpStatus.FORBIDDEN , "You are not Authorized")
-        }
-    }
-
-
-
-    if(payload.password){
-        payload.password=await bcryptjs.hash(payload.password,envVars.BCRYPT_SALT_ROUND)
-    }
-
-    const newUpdateUser=await User.findByIdAndUpdate(userId,payload,{new:true})
-
-    return newUpdateUser;
-}
-
-
-export const UserServices={
-    createUser,
-    getAllUsers,
-    updateUser
-}
+export const UserServices = {
+  createUser,
+  getAllUsers,
+  updateUser,
+};
