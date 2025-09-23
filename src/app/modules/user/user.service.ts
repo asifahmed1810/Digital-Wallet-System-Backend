@@ -5,6 +5,8 @@ import httpStatus from "http-status-codes"
 import bcryptjs from "bcryptjs";
 import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
+import { Wallet } from "../wallet/wallet.model";
+
 
 
 const createUser=async(payload:Partial<IUser>)=>{
@@ -27,6 +29,9 @@ const createUser=async(payload:Partial<IUser>)=>{
         auths:[authProvider],
         ...rest
     })
+
+    await Wallet.create({user:user._id})
+   
 
     return user;
 }
