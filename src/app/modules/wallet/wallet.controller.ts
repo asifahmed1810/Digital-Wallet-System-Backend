@@ -20,7 +20,21 @@ const getMyWallet =catchAsync(async(req:Request , res:Response , next:NextFuncti
 })
 
 
+const deposit=catchAsync(async(req:Request , res:Response , next:NextFunction)=>{
+    const {amount}=req.body;
+    const result=await WalletServices.deposit(req.user.id , amount)
+
+    sendResponse(res,{
+        success:true,
+        statusCode:httpStatus.OK,
+        message:"Transaction successful",
+        data:result
+    })
+})
+
+
 
 export const WalletControllers={
-    getMyWallet
+    getMyWallet,
+    deposit
 }

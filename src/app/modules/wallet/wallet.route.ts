@@ -9,6 +9,7 @@ const router=Router();
 router.get("/me",checkAuth(...Object.values(Role)), WalletControllers.getMyWallet)
 
 
+router.post("/deposit",checkAuth(Role.USER ,Role.AGENT), WalletControllers.deposit)
 
 
 export const WalletRoutes=router;

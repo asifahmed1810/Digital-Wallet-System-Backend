@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import AppError from "../../errorHelpers/AppError"
 import { Wallet } from "./wallet.model"
 import httpStatus from "http-status-codes";
+import { Transaction } from "../transaction/transaction.model";
+import { TransactionStatus, TransactionType } from "../transaction/transaction.interface";
 
 const getMyWallet = async (userId: string) => {
  
@@ -32,11 +34,26 @@ const deposit=async(userId:string , amount:number)=>{
     wallet.balance += amount;
     await wallet.save({session});
 
-    
+    await Transaction.create([
+      {
+        type:TransactionType.DEPOSIT,
+        amount,
+        from:userId,
+        to:userId,
+        status:TransactionStatus.COMPLETED
+      },
+    ],
+    {session}
+  );
 
+  await session.commitTransaction();
+  return{wallet,message:"Deposit successful"};
     
   } catch (error) {
-    
+    await session.abortTransaction();
+    throw error;
+  }finally{
+    session.endSession();
   }
 
 }
@@ -50,5 +67,6 @@ const deposit=async(userId:string , amount:number)=>{
 
 
 export const WalletServices={
-    getMyWallet
+    getMyWallet,
+    deposit
 }
