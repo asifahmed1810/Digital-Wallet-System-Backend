@@ -27,7 +27,8 @@ export interface IUser{
     phone ?:string,
     picture ?:string,
     isActive ?: IsActive,
-    isApproved ?:string,
+    isApproved ?:boolean,
+    commissionRate ?:number,
     auths:IAuthProvider[],
     wallet?:Types.ObjectId[]
 }

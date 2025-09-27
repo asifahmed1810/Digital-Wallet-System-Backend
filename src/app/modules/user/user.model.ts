@@ -29,6 +29,8 @@ const userSchema=new Schema<IUser>({
         enum:Object.values(IsActive),
         default:IsActive.ACTIVE
     },
+    isApproved:{type:Boolean, default:false},   //only for agents
+    commissionRate:{type:Number ,default:0},
     auths:[authProviderSchema]
 },
 {
