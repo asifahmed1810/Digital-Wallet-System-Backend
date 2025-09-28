@@ -11,5 +11,7 @@ router.get("/me",checkAuth(...Object.values(Role)), WalletControllers.getMyWalle
 
 router.post("/deposit",checkAuth(Role.USER ,Role.AGENT), WalletControllers.deposit)
 
+router.post("/withdraw",checkAuth(Role.USER , Role.AGENT),WalletControllers.withDraw)
+
 
 export const WalletRoutes=router;

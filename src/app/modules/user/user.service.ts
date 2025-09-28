@@ -7,6 +7,7 @@ import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
 import { Wallet } from "../wallet/wallet.model";
 
+
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
   
@@ -24,11 +25,15 @@ const createUser = async (payload: Partial<IUser>) => {
 
   const hashPassword = await bcryptjs.hash(password as string, 10);
 
+ 
+
+    
   const user = await User.create({
+    
     email,
     password: hashPassword,
     auths: [authProvider],
-    ...rest,
+    ...rest
   });
 
   await Wallet.create({ user: user._id });

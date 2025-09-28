@@ -58,6 +58,47 @@ const deposit=async(userId:string , amount:number)=>{
 
 }
 
+const withDraw=async(userId:string , amount:number)=>{
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const wallet= await Wallet.findOne({user:userId}).session(session);
+
+    if(!wallet || wallet.status ==="BLOCKED"){
+      throw new AppError(httpStatus.FORBIDDEN, "Wallet not accessible");
+    }
+
+    if(wallet.balance < amount){
+      throw new AppError(httpStatus.BAD_REQUEST , "Insufficient balance");
+    }
+
+    wallet.balance -= amount;
+    await wallet.save({session});
+
+    await Transaction.create([
+      {
+        type:TransactionType.WITHDRAW,
+        amount,
+        from:userId,
+        to:userId,
+        status:TransactionStatus.COMPLETED
+      }
+    ],
+  {session})
+
+  await session.commitTransaction();
+
+  return {wallet,message:"Withdraw successful"}
+
+  } catch (error) {
+    await session.abortTransaction();
+    throw error
+  }finally{
+    session.endSession();
+  }
+}
+
 
 
 
@@ -68,5 +109,6 @@ const deposit=async(userId:string , amount:number)=>{
 
 export const WalletServices={
     getMyWallet,
-    deposit
+    deposit,
+    withDraw
 }

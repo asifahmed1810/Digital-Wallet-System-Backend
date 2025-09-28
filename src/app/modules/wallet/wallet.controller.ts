@@ -32,9 +32,22 @@ const deposit=catchAsync(async(req:Request , res:Response , next:NextFunction)=>
     })
 })
 
+const withDraw=catchAsync(async(req:Request , res:Response , next:NextFunction)=>{
+    const {amount}=req.body;
+    const result=await WalletServices.withDraw(req.user.id , amount);
+
+    sendResponse(res,{
+        success:true,
+        statusCode:httpStatus.OK,
+        message:"Balance withdraw successfully",
+        data:result
+    })
+})
+
 
 
 export const WalletControllers={
     getMyWallet,
-    deposit
+    deposit,
+    withDraw
 }
