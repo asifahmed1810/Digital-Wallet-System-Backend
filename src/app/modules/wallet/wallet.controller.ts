@@ -44,10 +44,23 @@ const withDraw=catchAsync(async(req:Request , res:Response , next:NextFunction)=
     })
 })
 
+const sendMoney=catchAsync(async(req:Request , res:Response , next:NextFunction)=>{
+    const {toUserId , amount}=req.body;
+    const result=await WalletServices.sendMoney(req.user.id , toUserId , amount)
+
+    sendResponse(res,{
+        success:true,
+        statusCode:httpStatus.OK,
+        message:"Transfer successful",
+        data:result
+    })
+})
+
 
 
 export const WalletControllers={
     getMyWallet,
     deposit,
-    withDraw
+    withDraw,
+    sendMoney
 }

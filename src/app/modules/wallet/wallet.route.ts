@@ -13,5 +13,7 @@ router.post("/deposit",checkAuth(Role.USER ,Role.AGENT), WalletControllers.depos
 
 router.post("/withdraw",checkAuth(Role.USER , Role.AGENT),WalletControllers.withDraw)
 
+router.post("/sendMoney",checkAuth(Role.USER , Role.AGENT),WalletControllers.sendMoney)
+
 
 export const WalletRoutes=router;
