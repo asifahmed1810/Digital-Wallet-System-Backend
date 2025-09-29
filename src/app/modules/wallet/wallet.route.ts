@@ -15,5 +15,9 @@ router.post("/withdraw",checkAuth(Role.USER , Role.AGENT),WalletControllers.with
 
 router.post("/sendMoney",checkAuth(Role.USER , Role.AGENT),WalletControllers.sendMoney)
 
+router.patch("/block/:id", checkAuth(Role.ADMIN), WalletControllers.blockWallet)
+
+router.patch("/unblock/:id", checkAuth(Role.ADMIN), WalletControllers.unblockWallet)
+
 
 export const WalletRoutes=router;

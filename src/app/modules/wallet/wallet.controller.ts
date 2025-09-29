@@ -56,11 +56,35 @@ const sendMoney=catchAsync(async(req:Request , res:Response , next:NextFunction)
     })
 })
 
+const blockWallet=catchAsync(async(req:Request , res:Response , next:NextFunction)=>{
+    const result=await WalletServices.blockWallet(req.params.id)
+
+    sendResponse(res,{
+        success:true,
+        statusCode:httpStatus.OK,
+        message:"Wallet Blocked successfully",
+        data:result
+    })
+})
+
+const unblockWallet=catchAsync(async(req:Request , res:Response , next:NextFunction)=>{
+    const result= await WalletServices.unblockWallet(req.params.id)
+
+    sendResponse(res,{
+        success:true,
+        statusCode:httpStatus.OK,
+        message:"Wallet Unblock successfully",
+        data:result
+    })
+})
+
 
 
 export const WalletControllers={
     getMyWallet,
     deposit,
     withDraw,
-    sendMoney
+    sendMoney,
+    blockWallet,
+    unblockWallet
 }

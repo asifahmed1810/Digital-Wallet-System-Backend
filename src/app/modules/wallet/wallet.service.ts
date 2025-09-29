@@ -150,6 +150,41 @@ const sendMoney=async(fromUserId:string , toUserId:string, amount:number)=>{
 }
 
 
+const blockWallet=async(walletId:string)=>{
+  const wallet= await Wallet.findByIdAndUpdate(walletId,{
+    status:Wallet_Status.BLOCKED,
+    new:true
+  })
+
+  
+
+  if(!Wallet){
+    throw new AppError(httpStatus.NOT_FOUND , "Wallet not found");
+  }
+
+  return {message:"Wallet Blocked" , data:wallet}
+
+}
+
+const unblockWallet=async(walletId:string)=>{
+  const wallet= await Wallet.findByIdAndUpdate(
+    walletId,
+    {
+      status:Wallet_Status.ACTIVE,
+      new:true
+    }
+  )
+
+   if(!wallet){
+      throw new AppError(httpStatus.NOT_FOUND,"Wallet not found")
+    }
+
+    return{message:"Wallet unblocked",data:wallet}
+}
+
+
+
+
 
 
 
@@ -161,5 +196,7 @@ export const WalletServices={
     getMyWallet,
     deposit,
     withDraw,
-    sendMoney
+    sendMoney,
+    blockWallet,
+    unblockWallet
 }
