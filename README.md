@@ -87,7 +87,3 @@ The Digital Wallet API provides:
 | GET    | `/api/transactions`       | (Admin) View all transactions             |
 
 ---
-
-
-# Run development server
-npm run dev
