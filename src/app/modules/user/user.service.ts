@@ -9,8 +9,7 @@ import { Wallet } from "../wallet/wallet.model";
 
 
 const createUser = async (payload: Partial<IUser>) => {
-  const { email, password,role, ...rest } = payload;
-  
+  const { email, password, role = Role.USER, ...rest } = payload;
 
   const isUserExist = await User.findOne({ email });
 
@@ -25,22 +24,29 @@ const createUser = async (payload: Partial<IUser>) => {
 
   const hashPassword = await bcryptjs.hash(password as string, 10);
 
- 
+  
+  let isApproved = false;
+  if (role === Role.USER) {
+    isApproved = true; 
+  } else if (role === Role.AGENT) {
+    isApproved = false;
+  }
 
-    
   const user = await User.create({
-    
     email,
     password: hashPassword,
     role,
+    isApproved,
     auths: [authProvider],
-    ...rest
+    ...rest,
   });
 
+  
   await Wallet.create({ user: user._id });
 
   return user;
 };
+
 
 const getAllUsers = async () => {
   const users = await User.find({});
