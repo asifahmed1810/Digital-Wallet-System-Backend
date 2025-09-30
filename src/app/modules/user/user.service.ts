@@ -9,7 +9,7 @@ import { Wallet } from "../wallet/wallet.model";
 
 
 const createUser = async (payload: Partial<IUser>) => {
-  const { email, password, ...rest } = payload;
+  const { email, password,role, ...rest } = payload;
   
 
   const isUserExist = await User.findOne({ email });
@@ -32,6 +32,7 @@ const createUser = async (payload: Partial<IUser>) => {
     
     email,
     password: hashPassword,
+    role,
     auths: [authProvider],
     ...rest
   });

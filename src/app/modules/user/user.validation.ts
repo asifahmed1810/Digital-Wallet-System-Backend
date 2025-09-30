@@ -1,4 +1,5 @@
 import z from "zod";
+import { Role } from "./user.interface";
 
 export const createUserZodSchema = z.object({
   name: z
@@ -29,4 +30,12 @@ export const createUserZodSchema = z.object({
         "Phone number must be valid for Bangladesh. Format: +8801XXXXXXXXX or 01XXXXXXXXX",
     })
     .optional(),
+     role: z
+    .enum([Role.USER, Role.AGENT], {
+    
+      error: "Role must be either USER or AGENT",
+    })
+    .default(Role.USER),
 });
+
+
