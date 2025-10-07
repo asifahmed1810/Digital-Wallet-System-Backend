@@ -28,7 +28,7 @@ const checkAuth = (...authRoles) => (req, res, next) => __awaiter(void 0, void 0
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "You are not permitted to view this route");
         }
         req.user = {
-            id: verifiedToken.userId,
+            userId: verifiedToken.userId,
             email: verifiedToken.email,
             role: verifiedToken.role,
         };

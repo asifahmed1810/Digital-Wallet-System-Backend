@@ -53,7 +53,7 @@ const getAllUsers = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(v
 }));
 const getMe = (0, catchAsync_1.catchAsync)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const decodedToken = req.user;
-    const result = yield user_service_1.UserServices.getMe(decodedToken.id);
+    const result = yield user_service_1.UserServices.getMe(decodedToken.userId);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: http_status_codes_1.default.CREATED,
