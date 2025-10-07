@@ -30,14 +30,14 @@ const credentialsLogin = (payload) => __awaiter(void 0, void 0, void 0, function
         throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "Incorrect password");
     }
     const jwtPayload = {
-        userId: isUserExist._id.toString(),
+        userId: isUserExist._id,
         email: isUserExist.email,
         role: isUserExist.role,
     };
     const accessToken = (0, jwt_1.generateToken)(jwtPayload, env_1.envVars.JWT_ACCESS_SECRET, env_1.envVars.JWT_ACCESS_EXPIRES);
     const refreshToken = (0, jwt_1.generateToken)(jwtPayload, env_1.envVars.JWT_REFRESH_SECRET, env_1.envVars.JWT_REFRESH_EXPIRES);
     return {
-        userId: isUserExist._id.toString(),
+        userId: isUserExist._id,
         email: isUserExist.email,
         role: isUserExist.role,
         accessToken,

@@ -19,7 +19,7 @@ const http_status_codes_1 = __importDefault(require("http-status-codes"));
 const env_1 = require("../config/env");
 const checkAuth = (...authRoles) => (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const accessToken = req.headers.authorization;
+        const accessToken = req.headers.authorization || req.cookies.accessToken;
         if (!accessToken) {
             throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "No token received");
         }

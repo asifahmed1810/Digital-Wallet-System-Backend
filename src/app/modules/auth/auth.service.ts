@@ -21,7 +21,7 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
     }
 
     const jwtPayload = {
-        userId: isUserExist._id.toString(),
+        userId: isUserExist._id,
         email: isUserExist.email,
         role: isUserExist.role,
     };
@@ -30,7 +30,7 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
     const refreshToken = generateToken(jwtPayload, envVars.JWT_REFRESH_SECRET, envVars.JWT_REFRESH_EXPIRES);
 
     return {
-        userId: isUserExist._id.toString(),
+        userId: isUserExist._id,
         email: isUserExist.email,
         role: isUserExist.role,
         accessToken,

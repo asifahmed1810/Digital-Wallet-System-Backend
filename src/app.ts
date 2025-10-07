@@ -1,5 +1,5 @@
 import express, { Request, Response } from"express"
-
+import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import { router } from "./app/Routes";
@@ -12,6 +12,7 @@ import notFound from "./app/middlewares/notFound";
 const app=express();
 
 app.use(express.json())
+app.use(cookieParser())
 app.use(
   cors({
     origin: [

@@ -8,6 +8,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { Wallet } from "../wallet/wallet.model";
 
 
+
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, role = Role.USER, ...rest } = payload;
 
@@ -98,8 +99,17 @@ const updateUser = async (
   return newUpdateUser;
 };
 
+
+const getMe = async (userId: string) => {
+    const user = await User.findById(userId).select("-password");
+    return {
+        data: user
+    }
+};
+
 export const UserServices = {
   createUser,
   getAllUsers,
   updateUser,
+  getMe
 };

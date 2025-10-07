@@ -19,6 +19,8 @@ router.patch("/:id",checkAuth(...Object.values(Role)) , UserControllers.updateUs
 
 router.get("/all-users",checkAuth(Role.ADMIN), UserControllers.getAllUsers);
 
+router.get("/me", checkAuth(...Object.values(Role)), UserControllers.getMe)
+
 
 
 export const userRoutes = router;
