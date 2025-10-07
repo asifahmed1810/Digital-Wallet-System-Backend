@@ -32,7 +32,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const env_1 = require("../../config/env");
 const wallet_model_1 = require("../wallet/wallet.model");
 const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, role } = payload, rest = __rest(payload, ["email", "password", "role"]);
+    const { email, password, role = user_interface_1.Role.USER } = payload, rest = __rest(payload, ["email", "password", "role"]);
     const isUserExist = yield user_model_1.User.findOne({ email });
     if (isUserExist) {
         throw new AppError_1.default(http_status_codes_1.default.BAD_REQUEST, "User already exist");
@@ -42,7 +42,15 @@ const createUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         providerId: email,
     };
     const hashPassword = yield bcryptjs_1.default.hash(password, 10);
-    const user = yield user_model_1.User.create(Object.assign({ email, password: hashPassword, role, auths: [authProvider] }, rest));
+    let isApproved = false;
+    if (role === user_interface_1.Role.USER) {
+        isApproved = true;
+    }
+    else if (role === user_interface_1.Role.AGENT) {
+        isApproved = false;
+    }
+    const user = yield user_model_1.User.create(Object.assign({ email, password: hashPassword, role,
+        isApproved, auths: [authProvider] }, rest));
     yield wallet_model_1.Wallet.create({ user: user._id });
     return user;
 });

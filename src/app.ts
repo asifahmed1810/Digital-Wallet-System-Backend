@@ -12,7 +12,21 @@ import notFound from "./app/middlewares/notFound";
 const app=express();
 
 app.use(express.json())
-app.use(cors())
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // local frontend
+      "https://digital-wallet-system-frontend.vercel.app", // your deployed frontend (if any)
+    ],
+    credentials: true, // allow cookies/auth headers
+  })
+);
+
+
+
+
+
+
 
 app.use("/api/v1",router)
 

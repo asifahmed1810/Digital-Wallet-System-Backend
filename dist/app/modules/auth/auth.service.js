@@ -35,9 +35,13 @@ const credentialsLogin = (payload) => __awaiter(void 0, void 0, void 0, function
         role: isUserExist.role,
     };
     const accessToken = (0, jwt_1.generateToken)(jwtPayload, env_1.envVars.JWT_ACCESS_SECRET, env_1.envVars.JWT_ACCESS_EXPIRES);
+    const refreshToken = (0, jwt_1.generateToken)(jwtPayload, env_1.envVars.JWT_REFRESH_SECRET, env_1.envVars.JWT_REFRESH_EXPIRES);
     return {
+        userId: isUserExist._id.toString(),
         email: isUserExist.email,
-        accessToken
+        role: isUserExist.role,
+        accessToken,
+        refreshToken
     };
 });
 exports.AuthServices = {

@@ -10,7 +10,13 @@ const globalErrorHandler_1 = require("./app/middlewares/globalErrorHandler");
 const notFound_1 = __importDefault(require("./app/middlewares/notFound"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({
+    origin: [
+        "http://localhost:5173", // local frontend
+        "https://digital-wallet-system-frontend.vercel.app", // your deployed frontend (if any)
+    ],
+    credentials: true, // allow cookies/auth headers
+}));
 app.use("/api/v1", Routes_1.router);
 app.get('/', (req, res) => {
     res.status(200).json({
