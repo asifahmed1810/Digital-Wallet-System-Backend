@@ -17,7 +17,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // local frontend
-      "https://digital-wallet-system-frontend.vercel.app", // your deployed frontend (if any)
+      "https://digital-wallet-system-backend-mu.vercel.app", // your deployed frontend (if any)
     ],
     credentials: true, // allow cookies/auth headers
   })
